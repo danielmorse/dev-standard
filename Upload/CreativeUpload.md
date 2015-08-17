@@ -109,7 +109,7 @@ If the response status is "ERROR", then an "error_msg" field will also be in the
 
 ##Check Status
 
-You will need to know the:
+Once the file is uploaded you will need to check its status. To do this you will need to know the:
 
 * [`TICKET_STRING`](#generatetickets)
 * [`CREATIVE_ID`](../Platform/CampaignService.md#getcreativeseditions) (only if you used one in the original request)
