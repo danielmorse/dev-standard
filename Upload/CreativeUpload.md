@@ -64,29 +64,6 @@ The response will be:
 
 Save the `TICKET_STRING` for [checking the status](#check-status) and [uploading the files](#upload-file).
 
-##Check Status
-
-You will need to know the:
-
-* [`TICKET_STRING`](#generatetickets)
-* [`CREATIVE_ID`](../Platform/CampaignService.md#getcreativeseditions)
-
-Connect to https://*SmelterEndpoint*`/process.php` by looking up the SRV record `_smelter._tcp.telemetry.com` and send the GET request:
-
-    ?token=TICKET_STRING&edition_id=CREATIVE_ID
-
-You will get a JSON response:
-
-    { "error_code": 0, "status": "UNKNOWN_FILE" }
-
-You can receive the following status:
-
-* `UNKNOWN_FILE`: The file must be uploaded. [Upload the files](#upload-file).
-* `PROCESSING`: The file is being transcoded/converted
-* `STAGING`: The file exists on the staging area (and has been accepted)
-* `DONE`: The file is on Telemetry's content servers and is ready for serving.
-* `ERROR`: Something is wrong. Record the response JSON.
-
 ##Upload File
 
 This can be done in two ways: with or without an edition id. If an edition id id provided the tgxId used when you create the ticket must be sha1 of the file. Otherwise the tgxId in the ticket must be a value that will be unique to the edition that gets created.
@@ -129,6 +106,37 @@ You can receive the following status:
 * `ERROR`: Something is wrong. Record the response JSON.
 
 If the response status is "ERROR", then an "error_msg" field will also be in the response JSON, providing a description of the error encountered.
+
+##Check Status
+
+You will need to know the:
+
+* [`TICKET_STRING`](#generatetickets)
+* [`CREATIVE_ID`](../Platform/CampaignService.md#getcreativeseditions) (only if you used one in the original request)
+
+Connect to https://*SmelterEndpoint*`/process.php` or https://*SmelterEndpoint*`/processandcreate.php` (depenging on what you used earlier) by looking up the SRV record `_smelter._tcp.telemetry.com` and send the GET request:
+
+    ?token=TICKET_STRING&edition_id=CREATIVE_ID
+
+omit the edition id section if you did not provide one with the original upload
+
+You will get a JSON response like this:
+
+    { "error_code": 0, "status": "UNKNOWN_FILE" }
+
+If the file has finished processing, it will look like this 
+
+    { "error_code": 0, "status": "DONE", "edition"="50001", creative="40001", "paths" =["/tv2n/path/loc1.swf", "/tv2n/path/loc1_h264.mp4"] }
+    
+Note that from the 'process.php' url you will not set the edition and the creative ids.
+
+You can receive the following status:
+
+* `UNKNOWN_FILE`: The file must be uploaded. [Upload the files](#upload-file).
+* `PROCESSING`: The file is being transcoded/converted
+* `STAGING`: The file exists on the staging area (and has been accepted)
+* `DONE`: The file is on Telemetry's content servers and is ready for serving.
+* `ERROR`: Something is wrong. Record the response JSON.
 
 ##Formats
 
